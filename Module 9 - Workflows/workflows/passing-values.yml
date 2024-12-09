@@ -1,0 +1,25 @@
+name: Passing values between steps
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write a variable
+        id: generate-value
+        run: echo "MY_VALUE=Felipe" >> "$GITHUB_OUTPUT"
+
+      - name: Getting a variable
+        run: echo "${{ steps.generate-value.outputs.MY_VALUE }}"
+
+      - name: Masking a value
+        id: masker
+        run: |
+          secret_value=Claudia
+          echo "::add-mask::$secret_value"
+          echo "SECRET_VALUE=$secret_value" >> "$GITHUB_OUTPUT"
+
+      - name: Use the secret value
+        run: echo "The secret value is ${{ steps.masker.outputs.SECRET_VALUE }}"
